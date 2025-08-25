@@ -89,6 +89,8 @@ python ./src/train.py
    - **Learning Progress Tracking**: Multiple attempts with trend analysis
    - **Adaptive Interface**: Dynamic difficulty adjustment
    - **Smart Scoring System**: Transparent engagement calculation
+  
+<img width="2531" height="3840" alt="Untitled diagram _ Mermaid Chart-2025-08-25-143642" src="https://github.com/user-attachments/assets/ccf1e46d-ae55-4060-a9bb-731f26d196b1" />
 
 ## 📊 AI Models - Current Performance
 
