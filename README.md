@@ -2,20 +2,29 @@
 
 ```
 .
-|-- src/                 # package code (modules)
+|-- app.py                     # Streamlit app entrypoint
+|-- style.css                  # App styles
+|-- requirements.txt           # Python dependencies
+|-- PROJECT_REPORT.md
+|-- configs/
+|-- ai_learning_env/           # Virtual environment (existing)
+|-- data/
 |   |-- __init__.py
-|   |-- data.py          # data loading, preprocessing
-|   |-- model.py         # model integration (AIModelManager)
-|   |-- train.py         # training entrypoint (wraps existing trainer)
-|-- models/              # existing model code & artifacts (kept)
-|-- data/                # raw & processed datasets
-|-- scripts/             # utilities (placeholder)
-|-- notebooks/           # EDA/experiments (placeholder)
-|-- tests/               # smoke tests (placeholder)
-|-- configs/             # configs (placeholder)
-|-- app.py               # app entrypoint
-|-- adaptive_learning_app.py  # current Streamlit app (to be migrated)
-|-- requirements.txt
+|   |-- assistments_processor.py  # ASSISTments data pipeline
+|   |-- raw/                      # Place raw CSVs here
+|   |-- processed/                # Generated processed datasets
+|-- models/
+|   |-- __init__.py
+|   |-- artifacts/                # Trained model artifacts (saved here)
+|   |-- models/
+|       |-- artifacts/
+|-- src/
+|   |-- __init__.py
+|   |-- data.py                   # Data utilities
+|   |-- model.py                  # Model integration layer
+|   |-- train.py                  # Training entrypoint
+|   |-- models/
+|       |-- artifacts/
 ```
 
 # 🎓 AI-Powered Adaptive Learning System
@@ -278,42 +287,53 @@ An intelligent educational platform that uses machine learning to provide person
 - Python 3.8+
 - pip package manager
 
-### Installation Steps
+### Installation Steps (Windows PowerShell)
 
 1. **Clone the repository**
-   ```bash
+   ```powershell
    git clone <repository-url>
-   cd adaptive-learning-system
+   cd "AI in Personalised Learning"
    ```
 
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On macOS/Linux
-   source venv/bin/activate
+2. **Activate the existing virtual environment (or create one if missing)**
+   ```powershell
+   # If ai_learning_env exists
+   .\ai_learning_env\Scripts\Activate.ps1
+
+   # Otherwise, create and activate a new one
+   # python -m venv ai_learning_env
+   # .\ai_learning_env\Scripts\Activate.ps1
    ```
 
 3. **Install dependencies**
-   ```bash
+   ```powershell
    pip install -r requirements.txt
    ```
 
 4. **Prepare data**
-   ```bash
-   python data/assistments_processor.py
+   - Place your ASSISTments CSV(s) in `data/raw/` (e.g., `skill_builder_data.csv`).
+   - Run the processor to generate cleaned datasets in `data/processed/`:
+   ```powershell
+   python -m data.assistments_processor
+   # or
+   python .\data\assistments_processor.py
    ```
 
 5. **Train AI models**
-   ```bash
-   python models/simple_trainer.py
+   ```powershell
+   python -m src.train
+   # or
+   python .\src\train.py
    ```
 
-6. **Run the application**
-   ```bash
-   streamlit run adaptive_learning_app.py
+6. **Run the Streamlit app**
+   ```powershell
+   streamlit run app.py
    ```
+
+Notes:
+- Run all commands from the project root so that `src` and `data` are importable.
+- If you see module errors when using `-m`, ensure you are in the project root and the venv is active.
 
 ## 📊 Usage Guide
 
