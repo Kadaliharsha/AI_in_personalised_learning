@@ -1,31 +1,3 @@
-## Repository Structure
-
-```
-.
-|-- app.py                     # Streamlit app entrypoint
-|-- style.css                  # App styles
-|-- requirements.txt           # Python dependencies
-|-- PROJECT_REPORT.md
-|-- configs/
-|-- ai_learning_env/           # Virtual environment (existing)
-|-- data/
-|   |-- __init__.py
-|   |-- assistments_processor.py  # ASSISTments data pipeline
-|   |-- raw/                      # Place raw CSVs here
-|   |-- processed/                # Generated processed datasets
-|-- models/
-|   |-- __init__.py
-|   |-- artifacts/                # Trained model artifacts (saved here)
-|   |-- models/
-|       |-- artifacts/
-|-- src/
-|   |-- __init__.py
-|   |-- data.py                   # Data utilities
-|   |-- model.py                  # Model integration layer
-|   |-- train.py                  # Training entrypoint
-|   |-- models/
-|       |-- artifacts/
-```
 
 # 🎓 AI-Powered Adaptive Learning System
 
@@ -280,6 +252,35 @@ An intelligent educational platform that uses machine learning to provide person
 - **API Development**: RESTful API for external integrations
 - **Microservices**: Distributed architecture for enterprise use
 - **Cloud Deployment**: AWS/Azure deployment configurations
+
+## Repository Structure
+
+```
+.
+|-- app.py                     # Streamlit app entrypoint
+|-- style.css                  # App styles
+|-- requirements.txt           # Python dependencies
+|-- PROJECT_REPORT.md
+|-- configs/
+|-- ai_learning_env/           # Virtual environment (existing)
+|-- data/
+|   |-- __init__.py
+|   |-- assistments_processor.py  # ASSISTments data pipeline
+|   |-- raw/                      # Place raw CSVs here
+|   |-- processed/                # Generated processed datasets
+|-- models/
+|   |-- __init__.py
+|   |-- artifacts/                # Trained model artifacts (saved here)
+|   |-- models/
+|       |-- artifacts/
+|-- src/
+|   |-- __init__.py
+|   |-- data.py                   # Data utilities
+|   |-- model.py                  # Model integration layer
+|   |-- train.py                  # Training entrypoint
+|   |-- models/
+|       |-- artifacts/
+```
 
 ## 🔧 Setup & Installation
 
