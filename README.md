@@ -25,7 +25,7 @@ An intelligent educational platform that uses machine learning to provide person
    - **Categorical Encoding**: One-hot encoding for categorical variables
    - **Real-time Data Ingestion**: Framework for continuous data updates
 
-2. **AI Model Training** (`models/simple_trainer.py`)
+2. **AI Model Training** (`src/model.py`)
    - Trains Random Forest and Gradient Boosting models
    - Comprehensive evaluation metrics (Accuracy, F1-Score, ROC-AUC, Confusion Matrix)
    - Cross-validation and performance analysis
@@ -34,14 +34,14 @@ An intelligent educational platform that uses machine learning to provide person
    - **Hyperparameter Optimization**: Grid search and validation
    - **Balanced Training**: Ensures fair engagement classification
 
-3. **Model Integration** (`models/model_integration.py`)
+3. **Model Integration** (`src/train.py`)
    - Loads trained models for real-time inference
    - Provides prediction APIs with latency monitoring
    - Debugging and error handling capabilities
    - **Latency Constraints**: Real-time prediction within 100ms
    - **Scalability**: Handles multiple concurrent users
 
-4. **Streamlit Application** (`adaptive_learning_app.py`)
+4. **Streamlit Application** (`app.py`)
    - Interactive quiz interface
    - AI-powered analysis and recommendations
    - Model performance dashboard
