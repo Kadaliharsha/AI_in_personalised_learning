@@ -21,6 +21,10 @@ from sklearn.metrics import (
     accuracy_score, classification_report, confusion_matrix, 
     f1_score, roc_auc_score, precision_score, recall_score
 )
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Add project root to path and prefer src.data if available
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -151,6 +155,64 @@ def calculate_comprehensive_metrics(y_true, y_pred, y_proba=None, model_name="Mo
     print(f"     Recall-Macro: {metrics['recall_macro']:.4f}")
     
     return metrics
+
+def _ensure_dir(path: str) -> None:
+    try:
+        os.makedirs(path, exist_ok=True)
+    except Exception:
+        pass
+
+def _save_confusion_matrix(y_true, y_pred, class_names, out_path: str, title: str) -> None:
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=class_names, yticklabels=class_names)
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150)
+    plt.close()
+
+def _save_feature_importances(pipeline: Pipeline, feature_names, out_path: str, title: str) -> None:
+    try:
+        clf = pipeline.named_steps.get('classifier')
+        importances = getattr(clf, 'feature_importances_', None)
+        if importances is None:
+            return
+        # Top-k features
+        sorted_idx = np.argsort(importances)[::-1]
+        top_k = min(15, len(sorted_idx))
+        idx = sorted_idx[:top_k]
+        plt.figure(figsize=(8, 5))
+        sns.barplot(x=importances[idx], y=[feature_names[i] for i in idx], orient='h', palette='viridis')
+        plt.title(title)
+        plt.xlabel('Importance')
+        plt.ylabel('Feature')
+        plt.tight_layout()
+        plt.savefig(out_path, dpi=150)
+        plt.close()
+    except Exception:
+        # Non-fatal; continue without feature plot
+        try:
+            plt.close()
+        except Exception:
+            pass
+
+def _save_roc_curve(y_true, y_proba, out_path: str, title: str) -> None:
+    try:
+        from sklearn.metrics import RocCurveDisplay
+        plt.figure(figsize=(6, 5))
+        RocCurveDisplay.from_predictions(y_true, y_proba[:, 1])
+        plt.title(title)
+        plt.tight_layout()
+        plt.savefig(out_path, dpi=150)
+        plt.close()
+    except Exception:
+        try:
+            plt.close()
+        except Exception:
+            pass
 
 def load_processed_data():
     """Load processed ASSISTments data"""
@@ -325,6 +387,19 @@ def train_learner_classification_model():
         }
     }
     
+    # Save visualizations
+    artifacts_dir = os.path.join('models', 'artifacts')
+    _ensure_dir(artifacts_dir)
+    class_names = list(pd.Index(y_test.unique()))
+    _save_confusion_matrix(
+        y_test, y_pred, class_names,
+        os.path.join(artifacts_dir, 'learner_classification_rf_confusion_matrix.png'),
+        'Learner Classification - Confusion Matrix')
+    _save_feature_importances(
+        pipeline, feature_cols,
+        os.path.join(artifacts_dir, 'learner_classification_rf_feature_importance.png'),
+        'Learner Classification - Feature Importance')
+
     return model_data
 
 def train_performance_prediction_model():
@@ -414,6 +489,24 @@ def train_performance_prediction_model():
         }
     }
     
+    # Save visualizations (binary task)
+    artifacts_dir = os.path.join('models', 'artifacts')
+    _ensure_dir(artifacts_dir)
+    class_names = ['0', '1']
+    _save_confusion_matrix(
+        y_test, y_pred, class_names,
+        os.path.join(artifacts_dir, 'performance_prediction_gb_confusion_matrix.png'),
+        'Performance Prediction - Confusion Matrix')
+    if y_proba is not None:
+        _save_roc_curve(
+            y_test, y_proba,
+            os.path.join(artifacts_dir, 'performance_prediction_gb_roc_curve.png'),
+            'Performance Prediction - ROC Curve')
+    _save_feature_importances(
+        pipeline, feature_cols,
+        os.path.join(artifacts_dir, 'performance_prediction_gb_feature_importance.png'),
+        'Performance Prediction - Feature Importance')
+
     return model_data
 
 def train_engagement_analysis_model():
@@ -541,6 +634,19 @@ def train_engagement_analysis_model():
         }
     }
     
+    # Save visualizations
+    artifacts_dir = os.path.join('models', 'artifacts')
+    _ensure_dir(artifacts_dir)
+    class_names = list(pd.Index(y.unique()))
+    _save_confusion_matrix(
+        y_test, y_pred, class_names,
+        os.path.join(artifacts_dir, 'engagement_analysis_rf_confusion_matrix.png'),
+        'Engagement Analysis - Confusion Matrix')
+    _save_feature_importances(
+        pipeline, feature_cols,
+        os.path.join(artifacts_dir, 'engagement_analysis_rf_feature_importance.png'),
+        'Engagement Analysis - Feature Importance')
+
     return model_data
 
 def main():
