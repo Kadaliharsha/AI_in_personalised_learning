@@ -15,15 +15,27 @@ from typing import Dict, Any, Optional, Tuple
 class AIModelManager:
     """Manages AI models for adaptive learning recommendations"""
     
-    def __init__(self, artifacts_dir: str = "models/artifacts"):
+    def __init__(self, artifacts_dir: str = "models/artifacts", preload: bool = False):
+        """Create manager. If preload is True, models are loaded immediately.
+
+        By default preload is False to avoid expensive model loading at import/startup
+        (helps Streamlit start faster). Call `ensure_models_loaded()` to load on-demand.
+        """
         self.artifacts_dir = artifacts_dir
         self.models = {}
         self.metrics = {}
         self.training_info = {}
-        self.load_all_models()
+        self._models_loaded = False
+        if preload:
+            # explicit (optional) early load
+            self.load_all_models()
     
     def load_all_models(self):
         """Load all trained models with enhanced error handling"""
+        # Guard to avoid double-loading
+        if self._models_loaded:
+            return
+
         print("🔄 Loading AI Models...")
         
         model_files = [
@@ -86,6 +98,12 @@ class AIModelManager:
         
         print(f"🎯 Loaded {len(self.models)} models successfully")
         print("-" * 50)
+        self._models_loaded = True
+
+    def ensure_models_loaded(self):
+        """Ensure models are loaded (idempotent)."""
+        if not self._models_loaded:
+            self.load_all_models()
     
     def get_model_metrics(self, model_name: str) -> Dict[str, Any]:
         """Get comprehensive metrics for a specific model"""
@@ -470,9 +488,21 @@ class AIModelManager:
 # Global model manager instance
 _model_manager = None
 
-def get_model_manager() -> AIModelManager:
-    """Get or create the global model manager instance"""
+def get_model_manager(preload: bool = False) -> AIModelManager:
+    """Get or create the global model manager instance.
+
+    Args:
+        preload: if True, models are loaded before returning (may be slow).
+                 Default False to keep app startup fast.
+
+    Returns:
+        AIModelManager instance (models may be loaded lazily).
+    """
     global _model_manager
     if _model_manager is None:
-        _model_manager = AIModelManager()
+        _model_manager = AIModelManager(preload=preload)
+    else:
+        # If caller asked for preload, ensure models are loaded
+        if preload:
+            _model_manager.ensure_models_loaded()
     return _model_manager
